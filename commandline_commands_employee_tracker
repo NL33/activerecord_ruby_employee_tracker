@@ -1,0 +1,46 @@
+SETUP
+
+	$ mkdir active_record_employee_tracker
+	$ cd active_record_employee_tracker
+	$ gem install activerecord 
+	$ gem install rake
+	$ gem install active_record_migrations
+	$ mkdir lib spec db
+	$ cd lib
+	$ touch employee.rb
+	$ cd ..
+	$ touch Rakefile
+	$ touch commandline_commands_employee_tracker
+	$ touch employee_tracker_UI.rb
+	$ touch db/config.yml
+	$ subl .
+    (then update Rakefile and config.yml)
+    (open postgress)
+
+    $ rake db:create
+
+EMPLOYEE TABLE
+	$ rake db:new_migration name=create_employees
+		update table, and then
+	$ rake db:migrate
+
+DIVISIONS TABLE
+	$ rake db:new_migration name=create_divisions
+		update table, and then
+	$ rake db:migrate
+
+PROJECTS TABLE
+	$ rake db:new_migration name=create_projects
+		update table, and then
+	$ rake db:migrate	
+
+EMPLOYEES_PROJECTS (join) TABLE
+
+	$ rake db:new_migration name=create_employees_projects
+		update table, and then
+	$  rake db:migrate
+	
+    [NOTE Postgres commands:
+    	# \c active_record_employee_tracker
+		# \d  [shows all the schema [tables] in the database]
+		#\d employee  [shows the employee table]]

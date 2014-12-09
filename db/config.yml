@@ -1,0 +1,7 @@
+development:
+  adapter: postgresql
+  database: active_record_employee_tracker
+
+test:
+  adapter: postgresql
+  database: active_record_employee_tracker

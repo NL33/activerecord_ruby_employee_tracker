@@ -1,0 +1,1 @@
+Practice program using active record and ruby. Users can enter names of employees, assign them to divisions (one division per employee), assign them to projects (employees can have multiple projects, projects can have multiple employees), and take related actions.
