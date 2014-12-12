@@ -29,7 +29,7 @@ DIVISIONS TABLE
 		update table, and then
 	$ rake db:migrate
 
-PROJECTS TABLE
+PROJECTS TABLE (to show has_many association)
 	$ rake db:new_migration name=create_projects
 		update table, and then
 	$ rake db:migrate	
@@ -39,8 +39,21 @@ EMPLOYEES_PROJECTS (join) TABLE
 	$ rake db:new_migration name=create_employees_projects
 		update table, and then
 	$  rake db:migrate
+
+BIG_DEALS TABLE (big_deals model was created to demonstrate has_many:through association)
+
+	$ rake db:new_migration name=create_big_deals
+		update table, and then
+	$ rake db:migrate
+
+CONTRIBUTIONS Table (connecting employees and big_deals)
+
+	$ rake db:new_migration name=create_contributions
+	$rake db:migrate
+***
 	
     [NOTE Postgres commands:
     	# \c active_record_employee_tracker
 		# \d  [shows all the schema [tables] in the database]
 		#\d employee  [shows the employee table]]
+To load in command line: $ ruby employee_tracker_UI.rb
