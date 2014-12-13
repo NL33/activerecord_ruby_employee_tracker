@@ -20,7 +20,7 @@ def menu
     puts "Press 'a' to add an Employee, 'b' to create a project/add an employee to a project, 
     'c' to view employee information,'d' to search for employees, divisions, or projects, press 'e' to create a 
     Big Deal/add an employee to a Big Deal, press 'f' to provide a description of an employee's contribution
-    to a Big Deal, and press 'g' view the contributions of an employee to a Big Deal"
+    to a Big Deal, or press 'g' to view the contributions of an employee to a Big Deal or all contributions made to a Big Deal.\n"
     puts "Press 'x' to exit."
     choice = gets.chomp
     case choice
@@ -181,7 +181,60 @@ def add_employee_to_big_deal
 end
 
 def add_contribution
-***
+  puts "Please enter the name of the Big Deal to which you want to add the contribution"
+    bigdeal_name = gets.chomp
+         if BigDeal.where(name: bigdeal_name).exists?  
+          big_deal = BigDeal.where({:name => bigdeal_name}).first  
+        else
+          big_deal = BigDeal.new({:name => bigdeal_name})
+          big_deal.save 
+        end
+   puts "What is the name of the employee who has made the contribution?"
+        employee_name = gets.chomp
+        if Employee.where(name: employee_name).exists?  
+          employee = Employee.where({:name => employee_name}).first  
+        else
+          employee = Employee.new({:name => employee_name})
+          employee.save 
+        end
+    if !big_deal.employees.where(name:employee_name).exists?
+        big_deal.employees << employee
+    end
+    puts "Please add a description for the contribution"
+      contribution_description = gets.chomp
+      new_contribution = Contribution.new({:description => contribution_description, :big_deal_id => big_deal.id, 
+        :employee_id => employee.id})
+      new_contribution.save
+    puts "#{contribution_description} has been added as a contribution of #{employee_name} to #{bigdeal_name}"
+    menu
 end
 
+def search_contributions
+  puts "Here, you can search for contributions made by a given employee, or search for the contributions associated
+  with a given Big Deal. \n"
+  puts "Would you like to search by employee (press 'a') or by Big Deal (press 'b')?\n" 
+  if gets.chomp == 'a'
+    puts "Please enter the name of the employee whose contributions you want to view"
+    employee_name = gets.chomp
+    employee = Employee.where({:name => employee_name}).first
+    employee.contributions.each_with_index {|contribution, index| puts "#{index + 1}: Contribution Id: #{contribution.id}. Big Deal: #{contribution.big_deal.name}, Contribution: #{contribution.description}\n"}
+    puts "Press 'c' to search again, or 'd' to return to the main menu"
+      if gets.chomp == 'c'
+        search_contributions
+      elsif gets.chomp == 'd'
+         menu
+      end
+  elsif gets.chomp == 'b'
+    puts "Please enter the name of the Big Deal whose contributions you want to view. \n"
+    bigdeal_name = gets.chomp
+    big_deal = BigDeal.where({:name => bigdeal_name}).first
+    big_deal.contributions.each_with_index {|contribution, index| puts "#{index + 1}: Contribution Id: #{contribution.id}: Contribution: #{contribution.description}, Employee: #{contribution.employee.name}, Updated at: #{contribution.updated_at} \n" }
+      puts "Press 'c' to search again, or 'd' to return to the main menu"
+      if gets.chomp == 'c'
+        search_contributions
+      elsif gets.chomp == 'd'
+         menu
+      end
+  end
+ end
 welcome

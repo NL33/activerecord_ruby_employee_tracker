@@ -7,6 +7,7 @@ class Employee < ActiveRecord::Base
 def project_name
  self.projects.each {|project| project.name}
 end
+
  
 end
 
