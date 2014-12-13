@@ -2,6 +2,8 @@ require 'active_record'
 require './lib/employee'
 require './lib/division'
 require './lib/project'
+require './lib/big_deal'
+require './lib/contribution'
 
 database_configurations = YAML::load(File.open('./db/config.yml'))
 development_configuration = database_configurations['development']
@@ -15,7 +17,10 @@ end
 def menu
   choice = nil
   until choice == 'x'
-    puts "Press 'a' to add an Employee, 'b' to create a project/add an employee to a project, 'c' to view employee information,'d' to search for employees, divisions, or projects."
+    puts "Press 'a' to add an Employee, 'b' to create a project/add an employee to a project, 
+    'c' to view employee information,'d' to search for employees, divisions, or projects, press 'e' to create a 
+    Big Deal/add an employee to a Big Deal, press 'f' to provide a description of an employee's contribution
+    to a Big Deal, and press 'g' view the contributions of an employee to a Big Deal"
     puts "Press 'x' to exit."
     choice = gets.chomp
     case choice
@@ -27,6 +32,12 @@ def menu
       show_employees
     when 'd'
       search_employees
+    when 'e'
+      add_employee_to_big_deal
+    when 'f'
+      add_contribution
+    when 'g'
+      search_contributions
     when 'x'
       puts "Good-bye!"
 
@@ -80,7 +91,7 @@ def add_employee_to_project
           project.save 
         end
         project.employees << @employee
-        puts "He has been added to #{project_name}"
+        puts "The employee has been added to #{project_name}"
         puts "Would you like to add another employee to #{project_name}? (y/n)"
        break if gets.chomp == 'n'
       end
@@ -118,6 +129,59 @@ def search_employees
      elsif gets.chomp == 'n'
       menu
      end
+end
+
+def add_employee_to_big_deal
+  puts "Would you like to create a Big Deal only at this time (press 'a'), or add an employee to a new or existing Big Deal (press 'b')"
+  choice = gets.chomp.downcase
+  case choice
+  when 'a'
+      puts "What is the name of the Big Deal you want to create?"
+      bigdeal_name = gets.chomp
+      big_deal = BigDeal.new({:name => bigdeal_name}) 
+      puts "#{bigdeal_name} has been created."
+      puts "Press 'x' to do further action with respect to Big Deals, or 'y' to return to the main menu"
+        if gets.chomp == 'x'
+          add_employee_to_big_deal
+        elsif gets.chomp == 'y'
+          menu
+        end
+  when 'b'
+      puts "What is the name of the Big Deal to which you want to add an employee"
+      bigdeal_name = gets.chomp
+      loop do
+        puts "What is the name of the employee to be added to a Big Deal"
+        employee_name = gets.chomp
+        if Employee.where(name: employee_name).exists?  
+          employee = Employee.where({:name => employee_name}).first  
+        else
+          employee = Employee.new({:name => employee_name})
+          employee.save 
+        end
+        if BigDeal.where(name: bigdeal_name).exists?  
+          big_deal = BigDeal.where({:name => bigdeal_name}).first  
+        else
+          big_deal = BigDeal.new({:name => bigdeal_name})
+          big_deal.save 
+        end
+        big_deal.employees << employee
+        puts "#{employee_name} has been added to #{bigdeal_name}"
+        puts "Would you like to add another employee to #{bigdeal_name}? (y/n)"
+       break if gets.chomp == 'n'
+      end
+        puts "Would you like to add employees to another Big Deal? (y/n)"
+        if gets.chomp == 'y'
+          add_employee_to_big_deal
+        elsif gets.chomp == 'n'
+          menu
+       end
+    else
+      puts "Sorry, invalid option"
+    end
+end
+
+def add_contribution
+***
 end
 
 welcome
